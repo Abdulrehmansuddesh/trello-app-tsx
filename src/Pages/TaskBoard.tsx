@@ -1,7 +1,8 @@
-import React, { useState, ChangeEvent, FormEvent } from "react";
+import React, { useState, type FormEvent,  } from "react";
 import TaskForm from "../components/TaskForm";
 import TaskCard from "../components/TaskCards";
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 interface TaskCategory {
   id: number;
   todo?: string[];
@@ -16,7 +17,7 @@ const TaskBoardPage = () => {
     { id: 2, doing: [] },
     { id: 3, done: [] },
   ]);
-  const [dropDownValue, setDropDownValue] = useState<"todo" | "doing" | "done">("todo");
+  const [dropDownValue, setDropDownValue] = useState<string>("todo");
 
   const [editCategory, setEditCategory] = useState<string | null>(null);
   const [editIndex, setEditIndex] = useState<number | null>(null);
@@ -24,10 +25,10 @@ const TaskBoardPage = () => {
 
   const AddTodo = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (value.trim() === "") return alert("Please enter a value");
+    if (value.trim() === "")return toast.error("Please enter a Task");
 
     const newData = data.map((item) => {
-      if (item[dropDownValue]) {
+      if (item[dropDownValue] as string[]) {
         return {
           ...item,
           [dropDownValue]: [...(item[dropDownValue] as string[]), value],
@@ -42,7 +43,7 @@ const TaskBoardPage = () => {
 
   const handleDelete = (category: string, indexToDelete: number) => {
     const newData = data.map((item) => {
-      if (item[category]) {
+      if (item[category] as string[]) {
         const updatedList = [...(item[category] as string[])];
         updatedList.splice(indexToDelete, 1);
         return { ...item, [category]: updatedList };
@@ -63,7 +64,7 @@ const TaskBoardPage = () => {
     if (editCategory === null || editIndex === null) return;
 
     const newData = data.map((item) => {
-      if (item[editCategory]) {
+      if (item[editCategory] as number | string ) {
         const updatedList = [...(item[editCategory] as string[])];
         updatedList[editIndex] = editValue;
         return { ...item, [editCategory]: updatedList };
@@ -83,11 +84,12 @@ const TaskBoardPage = () => {
         value={value}
         dropDownValue={dropDownValue}
         onChange={(e) => setValue(e.target.value)}
-        onDropDownChange={(e) => setDropDownValue(e.target.value as "todo" | "doing" | "done")}
+        onDropDownChange={(e) => setDropDownValue(e.target.value as string)}
         onSubmit={AddTodo}
       />
 
-      <div className="flex justify-around w-full p-4">
+      <div className="flex justify-center-safe gap-10  w-full p-4">
+          <ToastContainer />
         {data.map((item) => {
           const key = Object.keys(item).find((k) => k !== "id") as string;
           return (
