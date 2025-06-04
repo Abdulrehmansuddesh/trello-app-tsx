@@ -1,10 +1,8 @@
-import { faPen } from "@fortawesome/free-solid-svg-icons";
-import { faTrash } from "@fortawesome/free-solid-svg-icons/faTrash";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { type ChangeEvent } from "react";
-  
-
+import React, {  type ChangeEvent ,  type KeyboardEvent } from "react";
 interface TaskItemProps {
+  data :string[]
+  key: number ;
+  tasks:string[];
   task: string;
   isEditing: boolean;
   onChangeEdit: (e: ChangeEvent<HTMLInputElement>) => void;
@@ -14,27 +12,47 @@ interface TaskItemProps {
   editValue: string;
 }
 
-const TaskItem: React.FC<TaskItemProps> = ({ task, isEditing, onChangeEdit, onEdit, onSave, onDelete, editValue }) => {
+const TaskItem: React.FC<TaskItemProps> = ({
+  task,
+  isEditing,
+  onChangeEdit,
+  onEdit,
+  onSave,
+  onDelete,
+  editValue,
+}) => {
+  
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      onSave();
+    }
+  };
+
+
   return (
-    
-  <li className="flex justify-between font-popins items-center p-2 pl-3   mx-1 mb-2 backdrop-blur-md bg-white/70 shadow-md rounded-[15px]">
+    <li  className= " relative flex justify-between font-popins overflow-hidden items-center p-2 pl-3 mx-1 mb-2 backdrop-blur-md bg-white/70 shadow-md rounded-[15px]">
       {isEditing ? (
-        <input type="text" value={editValue} onChange={onChangeEdit} className=" p-1 border-none mr-2 w-full" />
-      ) : ( 
-        <span>{task}</span>
+        <input
+          type="text"
+          value={editValue}
+          onChange={onChangeEdit}
+          onKeyDown={handleKeyDown}
+          className="p-1 border-none mr-2 w-[90%] outline-none"
+          autoFocus
+        />
+      ) : (
+        <span onClick={onEdit} className="cursor-text overflow-hidden w-[86%]">
+          {task}
+        </span>
       )}
-      <div className="flex gap-1">
-        {isEditing ? (
-          <button onClick={onSave} className=" text-blue-400 px-2  h-auto rounded cursor-pointer"><FontAwesomeIcon icon={faPen}/></button>
-        ) : (
-          <button onClick={onEdit} className=" px-2 rounded cursor-pointer"><FontAwesomeIcon className="text-blue-400" icon={faPen}/></button>
-        )}
-        <button onClick={onDelete} className="  px-2 rounded cursor-pointer"><FontAwesomeIcon className="text-red-600" icon={faTrash}/></button>
-      </div>
+      <button
+        onClick={onDelete}
+        className="px-2 absolute right-0  rounded cursor-pointer font-bold "
+      > 
+       🗑️
+      </button>
     </li>
   );
 };
 
 export default TaskItem;
-
-

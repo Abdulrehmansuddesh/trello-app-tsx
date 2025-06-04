@@ -13,7 +13,7 @@ interface TaskCategory {
 const TaskBoardPage = () => {
   const [value, setValue] = useState<string>("");
   const [data, setData] = useState<TaskCategory[]>([
-    { id: 1, todo: [] },
+    { id: 1, todo: []  },
     { id: 2, doing: [] },
     { id: 3, done: [] },
   ]);
@@ -25,23 +25,26 @@ const TaskBoardPage = () => {
 
   const AddTodo = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (value.trim() === "")return toast.error("Please enter a Task");
+    if (value.trim() === "")return toast.error("Please enter a Task ❌");
 
     const newData = data.map((item) => {
       if (item[dropDownValue] as string[]) {
         return {
           ...item,
           [dropDownValue]: [...(item[dropDownValue] as string[]), value],
+          
         };
       }
       return item;
     });
-
+    console.log(data,"data");
+    
     setData(newData);
     setValue("");
   };
 
   const handleDelete = (category: string, indexToDelete: number) => {
+    alert("are you want to delet this task ❌ ")
     const newData = data.map((item) => {
       if (item[category] as string[]) {
         const updatedList = [...(item[category] as string[])];
@@ -55,6 +58,8 @@ const TaskBoardPage = () => {
   };
 
   const handleEdit = (category: string, index: number, currentValue: string) => {
+    console.log(index,"i");
+    
     setEditCategory(category);
     setEditIndex(index);
     setEditValue(currentValue);

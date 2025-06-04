@@ -2,6 +2,9 @@ import React from "react";
 import TaskItem from "./TaskItems";
 
 interface TaskCardProps {
+  // key: number
+  setData : string[]
+  data : string[]
   title: string;
   tasks: string[];
   onEdit: (index: number, value: string) => void;
@@ -12,18 +15,15 @@ interface TaskCardProps {
   onChangeEditValue: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const TaskCard: React.FC<TaskCardProps> = ({
-  title,
-  tasks,
-  onEdit,
-  onSave,
-  onDelete,
-  editIndex,
-  editValue,
-  onChangeEditValue,
-}) => {
+
+const TaskCard: React.FC<TaskCardProps> = ({title,tasks,onEdit,onSave,onDelete, editIndex,editValue,onChangeEditValue,}) => {
+ 
+
+ 
+
   return (
     <div className="w-[22%]  cursor-pointer  h-[350px] p-4 rounded-xl mt-10 backdrop-blur-md bg-white/30  shadow-lg">
+
       <h3 className="text-lg font-semibold font-popins capitalize text-start border-b-2 pb-0.5  border-white  mb-4">
         {title}
       </h3>
@@ -40,6 +40,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
         <ul className="space-y-1   cursor-pointer">
           {tasks.map((task, index) => (
             <TaskItem
+              tasks={tasks}
               key={index}
               task={task}
               isEditing={editIndex === index}
@@ -52,6 +53,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
           ))}
         </ul>
       </div>
+
     </div>
   );
 };
