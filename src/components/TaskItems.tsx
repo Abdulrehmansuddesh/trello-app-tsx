@@ -1,16 +1,5 @@
-import React, {  type ChangeEvent ,  type KeyboardEvent } from "react";
-interface TaskItemProps {
-  data :string[]
-  key: number ;
-  tasks:string[];
-  task: string;
-  isEditing: boolean;
-  onChangeEdit: (e: ChangeEvent<HTMLInputElement>) => void;
-  onEdit: () => void;
-  onSave: () => void;
-  onDelete: () => void;
-  editValue: string;
-}
+import React, {  useRef, type ChangeEvent ,  type KeyboardEvent } from "react";
+
 
 const TaskItem: React.FC<TaskItemProps> = ({
   task,
@@ -19,9 +8,26 @@ const TaskItem: React.FC<TaskItemProps> = ({
   onEdit,
   onSave,
   onDelete,
+  tasks,
   editValue,
 }) => {
   
+
+  const handelDrageStart = (e :any ,task : string ,tasks : string[])=>{
+    console.log("handel start");
+    
+   
+
+    e.target.style.opacity = 0.5;
+    
+  }
+
+   const handelDrageEnd = (e : any)=>{
+    console.log('drag end');
+    e.target.style.opacity = 1;
+  }
+
+
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       onSave();
@@ -30,7 +36,7 @@ const TaskItem: React.FC<TaskItemProps> = ({
 
 
   return (
-    <li  className= " relative flex justify-between font-popins overflow-hidden items-center p-2 pl-3 mx-1 mb-2 backdrop-blur-md bg-white/70 shadow-md rounded-[15px]">
+    <li draggable  onDragStart={(e)=>handelDrageStart(e,task,tasks)} onDragEnd={handelDrageEnd} className= "  relative flex justify-between font-popins overflow-hidden items-center p-2 pl-3 mx-1 mb-2 backdrop-blur-md bg-white/70 shadow-md rounded-[15px]">
       {isEditing ? (
         <input
           type="text"

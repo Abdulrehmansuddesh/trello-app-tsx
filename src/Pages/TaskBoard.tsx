@@ -1,8 +1,9 @@
-import React, { useState, type FormEvent,  } from "react";
+import React, { useState, type FormEvent } from "react";
 import TaskForm from "../components/TaskForm";
 import TaskCard from "../components/TaskCards";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Swal from "sweetalert2";
 interface TaskCategory {
   id: number;
   todo?: string[];
@@ -13,7 +14,7 @@ interface TaskCategory {
 const TaskBoardPage = () => {
   const [value, setValue] = useState<string>("");
   const [data, setData] = useState<TaskCategory[]>([
-    { id: 1, todo: []  },
+    { id: 1, todo: [] },
     { id: 2, doing: [] },
     { id: 3, done: [] },
   ]);
@@ -25,41 +26,64 @@ const TaskBoardPage = () => {
 
   const AddTodo = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (value.trim() === "")return toast.error("Please enter a Task ❌");
+    if (value.trim() === "") return toast.error("Please enter a Task ❌");
 
     const newData = data.map((item) => {
       if (item[dropDownValue] as string[]) {
         return {
           ...item,
           [dropDownValue]: [...(item[dropDownValue] as string[]), value],
-          
         };
       }
       return item;
     });
-    console.log(data,"data");
-    
+  
+    console.log(data, "data");
+
     setData(newData);
     setValue("");
   };
 
   const handleDelete = (category: string, indexToDelete: number) => {
-    alert("are you want to delet this task ❌ ")
-    const newData = data.map((item) => {
-      if (item[category] as string[]) {
-        const updatedList = [...(item[category] as string[])];
-        updatedList.splice(indexToDelete, 1);
-        return { ...item, [category]: updatedList };
-      }
-      return item;
-    });
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#e74c3c",
+      cancelButtonColor: "#3498db",
+      confirmButtonText: "Delete",
+      heightAuto:'300px',
+      width: "300px",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const newData = data.map((item) => {
+          if (item[category] as string[]) {
+            const updatedList = [...(item[category] as string[])];
+            updatedList.splice(indexToDelete, 1);
+            return { ...item, [category]: updatedList };
+          }
+          return item;
+        });
 
-    setData(newData);
+        setData(newData);
+        Swal.fire({
+          title: "Deleted!",
+          text: "Your list has been deleted.",
+          icon: "success",
+          width:"300px"
+        });
+      }
+    });
   };
 
-  const handleEdit = (category: string, index: number, currentValue: string) => {
-    console.log(index,"i");
-    
+  const handleEdit = (
+    category: string,
+    index: number,
+    currentValue: string
+) => {
+    console.log(index, "i");
+
     setEditCategory(category);
     setEditIndex(index);
     setEditValue(currentValue);
@@ -69,7 +93,7 @@ const TaskBoardPage = () => {
     if (editCategory === null || editIndex === null) return;
 
     const newData = data.map((item) => {
-      if (item[editCategory] as number | string ) {
+      if (item[editCategory] as number | string) {
         const updatedList = [...(item[editCategory] as string[])];
         updatedList[editIndex] = editValue;
         return { ...item, [editCategory]: updatedList };
@@ -94,7 +118,7 @@ const TaskBoardPage = () => {
       />
 
       <div className="flex justify-center-safe gap-10  w-full p-4">
-          <ToastContainer />
+        <ToastContainer />
         {data.map((item) => {
           const key = Object.keys(item).find((k) => k !== "id") as string;
           return (
